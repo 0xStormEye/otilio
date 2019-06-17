@@ -1,5 +1,5 @@
 BEAT_NAME=otilio
-BEAT_PATH=github.com/isalgueiro/otilio
+BEAT_PATH=github.com/hmschreck/otilio
 BEAT_GOPATH=$(firstword $(subst :, ,${GOPATH}))
 BEAT_URL=https://${BEAT_PATH}
 SYSTEM_TESTS=false

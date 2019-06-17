@@ -28,10 +28,10 @@ addons:
 
 before_install:
   # Redo the travis setup but with the elastic/libbeat path. This is needed so the package path is correct
-  - mkdir -p $HOME/gopath/src/github.com/isalgueiro/otilio/
-  - rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/isalgueiro/otilio/
-  - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/isalgueiro/otilio/
-  - cd $HOME/gopath/src/github.com/isalgueiro/otilio/
+  - mkdir -p $HOME/gopath/src/github.com/otilio/otilio/
+  - rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/otilio/otilio/
+  - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/otilio/otilio/
+  - cd $HOME/gopath/src/github.com/otilio/otilio/
 
 install:
   - true

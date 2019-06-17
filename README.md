@@ -1,6 +1,6 @@
 # Otilio
 
-[![Build Status](https://travis-ci.org/isalgueiro/otilio.svg?branch=master)](https://travis-ci.org/isalgueiro/otilio) [![Go Report Card](https://goreportcard.com/badge/github.com/isalgueiro/otilio)](https://goreportcard.com/report/github.com/isalgueiro/otilio)
+[![Build Status](https://travis-ci.org/otilio/otilio.svg?branch=master)](https://travis-ci.org/otilio/otilio) [![Go Report Card](https://goreportcard.com/badge/github.com/otilio/otilio)](https://goreportcard.com/report/github.com/otilio/otilio)
 
 Welcome to Otilio. [Beat](https://www.elastic.co/products/beats) to query SNMP data. This was built following [Beats developer guide](https://www.elastic.co/guide/en/beats/devguide/6.1/new-beat.html) and uses [gosnmp](https://github.com/soniah/gosnmp) library.
 
@@ -57,7 +57,7 @@ otilio:
 ## Building
 
 Ensure that this folder is at the following location:
-`${GOPATH}/github.com/isalgueiro/otilio`
+`${GOPATH}/github.com/otilio/otilio`
 
 ### Requirements
 
