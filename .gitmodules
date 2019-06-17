@@ -1,0 +1,6 @@
+[submodule "src/github.com/MichaelTJones/walk"]
+	path = src/github.com/MichaelTJones/walk
+	url = https://github.com/MichaelTJones/walk.git
+[submodule "src/github.com/uudashr/gopkgs"]
+	path = src/github.com/uudashr/gopkgs
+	url = https://github.com/uudashr/gopkgs
