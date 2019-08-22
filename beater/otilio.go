@@ -10,7 +10,7 @@ import (
 	"github.com/elastic/beats/libbeat/publisher"
 	"github.com/soniah/gosnmp"
 
-	"github.com/hmschreck/otilio/config"
+	"github.com/0xStormEye/otilio/config"
 )
 
 // Otilio data type
