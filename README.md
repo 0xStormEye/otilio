@@ -43,10 +43,11 @@ otilio:
   version: 3
 
   # SNMP user security model parameters
-  # currently only SHA auth and DES encryption supported ¯\_(ツ)_/¯
   user: "theuser"
-  authpass: "theauthpassword"
-  privpass: "theprivacyencryptionpassword"
+  AuthProtocol: SHA
+  AuthPassword: Auth123456
+  PrivProtocol: DES
+  PrivPassword: Priv654321
 
   # oids to query
   # (the starting dot is intended)
