@@ -50,6 +50,8 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		o = append(o, v["oid"])
 	}
 
+	logp.Debug("otilio", "%v", o)
+
 	bt := &Otilio{
 		done:      make(chan struct{}),
 		config:    config,
@@ -64,6 +66,10 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 func (bt *Otilio) Run(b *beat.Beat) error {
 	logp.Info("otilio is running! Hit CTRL-C to stop it.")
 
+	var params *gosnmp.GoSNMP
+	var PrivProtocol gosnmp.SnmpV3PrivProtocol
+	var AuthProtocol gosnmp.SnmpV3AuthProtocol
+	
 	bt.client = b.Publisher.Connect()
 	ticker := time.NewTicker(bt.config.Period)
 	for {
@@ -73,27 +79,59 @@ func (bt *Otilio) Run(b *beat.Beat) error {
 		case <-ticker.C:
 			// TODO: connect outside the loop with a timeout < bt.config.Period
 			for _, host := range bt.config.Hosts {
-				gosnmp.Default.Target = host
-				gosnmp.Default.Port = bt.config.Port
-				gosnmp.Default.Community = bt.config.Community
-				gosnmp.Default.Version = bt.version
-				if bt.version == gosnmp.Version3 {
-					gosnmp.Default.SecurityModel = gosnmp.UserSecurityModel
-					gosnmp.Default.SecurityParameters = &gosnmp.UsmSecurityParameters{
-						UserName:                 bt.config.User,
-						AuthenticationPassphrase: bt.config.AuthPassword,
-						PrivacyPassphrase:        bt.config.PrivPassword,
-						AuthenticationProtocol:   gosnmp.SHA,
-						PrivacyProtocol:          gosnmp.DES,
+				logp.Debug("otilio", "SNMP Version: %v", bt.version)
+				if bt.version != gosnmp.Version3 {
+					// Version 1/2c
+					params = &gosnmp.GoSNMP {
+						Target:				host,
+						Port:					bt.config.Port,
+						Community: 		bt.config.Community,
+						Version:			bt.version,
+					}
+				} else {
+					// Version 3
+
+					if bt.config.AuthProtocol == "MD5" {
+						AuthProtocol = gosnmp.MD5
+						logp.Debug("otilio", "Authentication Protocol: MD5: %v", AuthProtocol == gosnmp.MD5)
+					} else { // Default SHA
+						AuthProtocol = gosnmp.SHA
+						logp.Debug("otilio", "Authentication Protocol: SHA: %v", AuthProtocol == gosnmp.SHA)
+					}
+
+					if bt.config.PrivProtocol == "AES" {
+						PrivProtocol = gosnmp.AES
+						logp.Debug("otilio", "Privacy Protocol: AES: %v", PrivProtocol == gosnmp.AES)
+					} else { // Default DES
+						PrivProtocol = gosnmp.DES
+						logp.Debug("otilio", "Privacy Protocol: DES: %v", PrivProtocol == gosnmp.DES)
+					}
+
+					params = &gosnmp.GoSNMP {
+						Target:							host,
+						Port:								bt.config.Port,
+						Version:						bt.version,
+						Timeout:      			time.Duration(1) * time.Second,
+						SecurityModel:		 	gosnmp.UserSecurityModel,
+						MsgFlags:    			  gosnmp.AuthPriv,
+						SecurityParameters: &gosnmp.UsmSecurityParameters {
+							UserName:									bt.config.User,
+							AuthenticationPassphrase: bt.config.AuthPassword,
+							PrivacyPassphrase:        bt.config.PrivPassword,
+							AuthenticationProtocol:   AuthProtocol,
+							PrivacyProtocol:          PrivProtocol,
+						},
 					}
 				}
-				err := gosnmp.Default.Connect()
+
+				err := params.Connect()
 				if err != nil {
 					logp.Critical("Can't connect to %s: %v", host, err.Error())
 					return fmt.Errorf("Can't connect to %s", host)
 				}
-				defer gosnmp.Default.Conn.Close()
-				r, err := gosnmp.Default.Get(bt.oids)
+				defer params.Conn.Close()
+
+				r, err := params.Get(bt.oids)
 				if err != nil {
 					logp.Err("Can't get oids for %v: %v", host, err.Error())
 				} else {

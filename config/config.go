@@ -12,16 +12,22 @@ type Config struct {
 	Port         uint16              `config:"port"`
 	Community    string              `config:"community"`
 	User         string              `config:"user"`
-	AuthPassword string              `config:"authpass"`
-	PrivPassword string              `config:"privpass"`
+	AuthPassword string              `config:"AuthPassword"`
+	AuthProtocol string							 `config:"AuthProtocol"`
+	PrivPassword string              `config:"PrivPassword"`
+	PrivProtocol string							 `config:"PrivProtocol"`
 	Version      string              `config:"version"`
 	OIDs         []map[string]string `config:"oids"`
 }
 
 // DefaultConfig default configuration
 var DefaultConfig = Config{
-	Period:    1 * time.Second,
-	Port:      161,
-	Community: "public",
-	Version:   "2c",
+	Period:    			time.Second,
+	Port:     			161,
+	Community: 			"public",
+	Version:   			"2c",
+
+	// Version 3
+	AuthProtocol: 	"MD5",
+	PrivProtocol:		"DES",
 }
